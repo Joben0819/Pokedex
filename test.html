@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PokéDex Tracker</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Tailwind Config -->
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "on-secondary-fixed-variant": "#584400",
+            "surface-container-highest": "#dee2ec",
+            "surface-container-high": "#e4e8f2",
+            "surface": "#f8f9ff",
+            "on-primary-container": "#fffbff",
+            "primary": "#bc0007",
+            "on-tertiary-container": "#fefcff",
+            "surface-dim": "#d6dae4",
+            "on-primary": "#ffffff",
+            "on-tertiary-fixed": "#001b3d",
+            "surface-bright": "#f8f9ff",
+            "on-secondary-fixed": "#241a00",
+            "surface-variant": "#dee2ec",
+            "error-container": "#ffdad6",
+            "surface-tint": "#c00008",
+            "primary-container": "#e90d11",
+            "on-primary-fixed": "#410001",
+            "inverse-primary": "#ffb4a9",
+            "on-error-container": "#93000a",
+            "on-tertiary": "#ffffff",
+            "secondary-container": "#ffcb09",
+            "on-error": "#ffffff",
+            "inverse-surface": "#2c3138",
+            "on-tertiary-fixed-variant": "#00468b",
+            "error": "#ba1a1a",
+            "on-surface": "#171c23",
+            "background": "#f8f9ff",
+            "tertiary-fixed-dim": "#a9c7ff",
+            "tertiary-fixed": "#d6e3ff",
+            "surface-container-low": "#f0f4fd",
+            "secondary-fixed-dim": "#f2c000",
+            "outline-variant": "#e9bcb6",
+            "primary-fixed": "#ffdad5",
+            "tertiary": "#005bb2",
+            "on-surface-variant": "#5e3f3a",
+            "outline": "#936e69",
+            "secondary": "#745b00",
+            "secondary-fixed": "#ffe08d",
+            "tertiary-container": "#2874d2",
+            "on-background": "#171c23",
+            "on-primary-fixed-variant": "#930004",
+            "surface-container": "#eaeef8",
+            "inverse-on-surface": "#edf1fb",
+            "on-secondary-container": "#6f5700",
+            "surface-container-lowest": "#ffffff",
+            "on-secondary": "#ffffff",
+            "primary-fixed-dim": "#ffb4a9"
+          },
+          borderRadius: {
+            DEFAULT: "0.25rem",
+            lg: "0.5rem",
+            xl: "0.75rem",
+            full: "9999px"
+          },
+          spacing: {
+            "margin-desktop": "2.5rem",
+            "space-lg": "1.25rem",
+            "gutter-desktop": "1.5rem",
+            "margin": "1rem",
+            "space-xs": "0.25rem",
+            "space-sm": "0.5rem",
+            "gutter": "1rem",
+            "margin-tablet": "1.5rem",
+            "space-md": "0.75rem",
+            "space-xl": "2rem"
+          },
+          fontFamily: {
+            "label-md": ["Space Grotesk"],
+            "body-lg": ["Plus Jakarta Sans"],
+            "body-md": ["Plus Jakarta Sans"],
+            "body-sm": ["Plus Jakarta Sans"],
+            "label-sm": ["Space Grotesk"],
+            "label-lg": ["Space Grotesk"],
+            "headline-lg": ["Space Grotesk"],
+            "headline-md": ["Space Grotesk"],
+            "display-lg-mobile": ["Space Grotesk"],
+            "display-lg": ["Space Grotesk"],
+            "headline-sm": ["Space Grotesk"]
+          },
+          fontSize: {
+            "label-md": ["12px", { lineHeight: "16px", letterSpacing: "0.04em", fontWeight: "600" }],
+            "body-lg": ["16px", { lineHeight: "24px", fontWeight: "400" }],
+            "body-md": ["14px", { lineHeight: "20px", fontWeight: "400" }],
+            "body-sm": ["12px", { lineHeight: "16px", fontWeight: "400" }],
+            "label-sm": ["10px", { lineHeight: "12px", letterSpacing: "0.06em", fontWeight: "700" }],
+            "label-lg": ["14px", { lineHeight: "18px", letterSpacing: "0.02em", fontWeight: "600" }],
+            "headline-lg": ["28px", { lineHeight: "34px", letterSpacing: "-0.02em", fontWeight: "700" }],
+            "headline-md": ["22px", { lineHeight: "28px", letterSpacing: "-0.01em", fontWeight: "600" }],
+            "display-lg-mobile": ["32px", { lineHeight: "38px", letterSpacing: "-0.02em", fontWeight: "700" }],
+            "display-lg": ["40px", { lineHeight: "48px", letterSpacing: "-0.03em", fontWeight: "700" }],
+            "headline-sm": ["18px", { lineHeight: "24px", fontWeight: "600" }]
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    @layer base {
+      html, body { margin: 0; padding: 0; }
+      body { overscroll-behavior: none; }
+      main > :first-child { margin-top: 0 !important; }
+      main > :last-child { margin-bottom: 0 !important; }
+    }
+    ::-webkit-scrollbar { display: none; }
+  </style>
+</head>
+
+<body class="bg-background font-body-md text-on-surface min-h-screen">
+
+  <!-- Header -->
+  <header class="fixed top-0 left-0 right-0 z-50 bg-surface-container-lowest/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)]">
+    <div class="h-20 max-w-[1280px] mx-auto px-margin md:px-margin-tablet lg:px-margin-desktop flex items-center justify-between gap-gutter">
+      <div class="flex items-center gap-space-lg shrink-0">
+        <div class="flex items-center gap-space-sm">
+          <img alt="PokéDex Modern Logo" class="h-8 w-auto object-contain"
+               src="https://lh3.googleusercontent.com/aida/AEtjO1VPwJrMa-N89QBYQEGoUlbjexmhnzGH7OpPvbR1d4KiNXLIfzrccyK9HqCYeoafCK2XfauQkSoCDkWDytMo8k_iQvhY5GfQYGbqBoBqN-WbjPs3a4sfkIGruRnBcAI-Qmi6o61W3MGQkNv-HTyoqupt-5yGeWPGOpRqjlI5cFvVnmovvjr1VDFy0Ou8X9vxqI2MN7ImsmWTtX-hUZ9XxZGA4-u1Rt70Zp76pRHol_dPyQb5PTidJCTPHbM">
+          <span class="font-headline-sm text-headline-sm text-on-surface tracking-tight">
+            PokéDex <span class="text-primary">Tracker</span>
+          </span>
+        </div>
+        <nav class="hidden lg:flex items-center p-space-xs bg-surface-container-low rounded-xl gap-space-xs"
+             data-active-classes="bg-surface-container-high text-on-surface font-semibold">
+          <a class="px-space-md py-space-sm rounded-lg font-label-lg text-label-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all"
+             data-path="all-pokedex" href="#">All Pokédex</a>
+          <a class="px-space-md py-space-sm rounded-lg font-label-lg text-label-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all"
+             data-path="captured-collection" href="#">Captured Collection</a>
+          <a class="px-space-md py-space-sm rounded-lg font-label-lg text-label-lg text-on-surface-variant hover:bg-surface-container hover:text-on-surface transition-all"
+             data-path="trainer-profile" href="#">Trainer Profile</a>
+        </nav>
+      </div>
+
+      <div class="flex items-center gap-space-md flex-1 max-w-md mx-space-sm">
+        <div class="relative w-full">
+          <span class="material-symbols-outlined absolute left-space-md top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]">search</span>
+          <input class="w-full pl-10 pr-space-md py-space-sm rounded-full bg-surface-container-low text-on-surface placeholder:text-on-surface-variant font-body-sm text-body-sm focus:outline-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-primary/20 transition-all"
+                 placeholder="Search Pokémon by name, #ID, or type..." type="text">
+        </div>
+      </div>
+
+      <div class="flex items-center gap-space-md shrink-0">
+        <div class="hidden sm:flex items-center gap-space-sm px-space-md py-space-xs bg-secondary-container/20 rounded-full">
+          <span class="material-symbols-outlined text-secondary text-[18px]">20mp</span>
+          <div class="flex items-baseline gap-space-xs font-label-md text-label-md">
+            <span class="text-secondary font-bold">151</span>
+            <span class="text-on-surface-variant">/ 1025 Caught</span>
+          </div>
+        </div>
+        <div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
+          <span class="material-symbols-outlined text-on-primary text-[18px]">person</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <main class="w-full pt-20 bg-background max-w-[1280px] mx-auto px-margin md:px-margin-tablet lg:px-margin-desktop">
+    <div class="flex flex-col w-full pb-space-xl">
+
+      <!-- Top Context Header & KPI Strip -->
+      <div class="flex flex-col lg:flex-row lg:items-end justify-between gap-space-lg mb-space-lg">
+        <div>
+          <div class="flex items-center gap-space-sm mb-space-xs">
+            <span class="font-label-sm text-label-sm tracking-widest text-primary uppercase bg-primary-fixed/40 px-space-sm py-0.5 rounded-full">Kanto to Paldea Index</span>
+            <span class="text-on-surface-variant font-label-sm text-label-sm">• Field Sync v4.2</span>
+          </div>
+          <h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight">Active Dex Explorer</h1>
+          <p class="font-body-md text-body-md text-on-surface-variant mt-space-xs max-w-xl">
+            Manage live sightings, register captured specimens with custom field metadata, and calibrate regional registration progress.
+          </p>
+        </div>
+
+        <!-- Quick Stats Bento Widget -->
+        <div class="flex items-stretch gap-space-sm bg-surface-container-low p-space-sm rounded-xl">
+          <div class="flex flex-col justify-center px-space-md py-space-xs bg-surface-container-lowest rounded-lg shadow-sm">
+            <span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Dex Count</span>
+            <div class="flex items-baseline gap-space-xs">
+              <span class="font-headline-md text-headline-md text-on-surface">151</span>
+              <span class="font-label-sm text-label-sm text-on-surface-variant">/ 1025</span>
+            </div>
+          </div>
+          <div class="flex flex-col justify-center px-space-md py-space-xs bg-surface-container-lowest rounded-lg shadow-sm">
+            <span class="font-label-sm text-label-sm text-secondary uppercase">Captured</span>
+            <div class="flex items-baseline gap-space-xs">
+              <span class="font-headline-md text-headline-md text-secondary font-bold" id="kpi-caught-counter">42</span>
+              <span class="font-label-sm text-label-sm text-on-surface-variant">registered</span>
+            </div>
+          </div>
+          <div class="flex flex-col justify-center px-space-md py-space-xs bg-surface-container-lowest rounded-lg shadow-sm min-w-[120px]">
+            <div class="flex justify-between items-center mb-space-xs">
+              <span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Rate</span>
+              <span class="font-label-sm text-label-sm font-bold text-tertiary">27.8%</span>
+            </div>
+            <div class="w-full bg-surface-container-highest rounded-full h-1.5 overflow-hidden">
+              <div class="bg-tertiary h-full rounded-full transition-all duration-500" style="width: 27.8%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Primary Split Workspace -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter-desktop items-start">
+
+        <!-- LEFT COLUMN -->
+        <div class="lg:col-span-7 xl:col-span-8 flex flex-col gap-space-md">
+
+          <!-- Navigation Segment Bar & Search Bar -->
+          <div class="bg-surface-container-lowest p-space-md rounded-xl shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-space-md">
+            <div class="inline-flex p-1 bg-surface-container-high rounded-xl self-start sm:self-auto">
+              <button class="flex items-center gap-space-xs px-space-md py-space-xs rounded-lg font-label-md text-label-md bg-surface-container-lowest text-on-surface shadow-sm transition-all duration-200"
+                      id="view-tab-all" onclick="switchMainTab('all')">
+                <span class="material-symbols-outlined text-[18px]">apps</span>
+                <span>All Pokédex</span>
+                <span class="px-1.5 py-0.5 rounded-full bg-surface-container-high text-on-surface-variant text-[10px]">1,025</span>
+              </button>
+              <button class="flex items-center gap-space-xs px-space-md py-space-xs rounded-lg font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-all duration-200"
+                      id="view-tab-captured" onclick="switchMainTab('captured')">
+                <span class="material-symbols-outlined text-[18px]">check_circle</span>
+                <span>Captured</span>
+                <span class="px-1.5 py-0.5 rounded-full bg-secondary-container/40 text-on-secondary-fixed-variant font-bold text-[10px]" id="captured-badge-count">42</span>
+              </button>
+            </div>
+
+            <div class="flex items-center gap-space-sm w-full sm:w-auto justify-between sm:justify-end">
+              <div class="relative flex-1 sm:w-64">
+                <span class="material-symbols-outlined absolute left-space-sm top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px]">filter_list</span>
+                <input class="w-full pl-8 pr-space-md py-space-xs rounded-lg bg-surface-container-low text-on-surface font-body-sm text-body-sm placeholder:text-on-surface-variant focus:outline-none focus:bg-surface-container-lowest focus:ring-1 focus:ring-primary transition-all"
+                       id="dex-filter-input" onkeyup="filterCreatures(this.value)" placeholder="Quick find specimen..." type="text">
+              </div>
+              <div class="flex items-center bg-surface-container-low p-0.5 rounded-lg shrink-0">
+                <button class="p-1.5 rounded bg-surface-container-lowest text-on-surface shadow-sm"
+                        id="toggle-grid-btn" onclick="setDisplayLayout('grid')" title="Grid Layout">
+                  <span class="material-symbols-outlined text-[18px]">grid_view</span>
+                </button>
+                <button class="p-1.5 rounded text-on-surface-variant hover:text-on-surface transition-colors"
+                        id="toggle-list-btn" onclick="setDisplayLayout('list')" title="List Layout">
+                  <span class="material-symbols-outlined text-[18px]">view_list</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Elemental Filter Pills -->
+          <div class="flex items-center gap-space-xs overflow-x-auto pb-1 scrollbar-none">
+            <button class="element-tag px-space-md py-space-xs rounded-full font-label-sm text-label-sm uppercase tracking-wider bg-on-surface text-on-primary shrink-0 transition-transform active:scale-95"
+                    onclick="filterByType('all')">All Types</button>
+            <button class="element-tag px-space-md py-space-xs rounded-full font-label-sm text-label-sm uppercase tracking-wider bg-secondary-container/40 text-on-secondary-fixed-variant hover:bg-secondary-container/60 shrink-0 transition-transform active:scale-95"
+                    onclick="filterByType('electric')">Electric (12)</button>
+            <button class="element-tag px-space-md py-space-xs rounded-full font-label-sm text-label-sm uppercase tracking-wider bg-surface-container-high text-on-surface hover:bg-surface-container-highest shrink-0 transition-transform active:scale-95"
+                    onclick="filterByType('grass')">Grass (18)</button>
+            <button class="element-tag px-space-md py-space-xs rounded-full font-label-sm text-label-sm uppercase tracking-wider bg-primary-fixed/60 text-on-primary-fixed-variant hover:bg-primary-fixed shrink-0 transition-transform active:scale-95"
+                    onclick="filterByType('fire')">Fire (14)</button>
+            <button class="element-tag px-space-md py-space-xs rounded-full font-label-sm text-label-sm uppercase tracking-wider bg-tertiary-fixed/70 text-on-tertiary-fixed-variant hover:bg-tertiary-fixed shrink-0 transition-transform active:scale-95"
+                    onclick="filterByType('water')">Water (22)</button>
+            <button class="element-tag px-space-md py-space-xs rounded-full font-label-sm text-label-sm uppercase tracking-wider bg-surface-container-high text-on-surface hover:bg-surface-container-highest shrink-0 transition-transform active:scale-95"
+                    onclick="filterByType('ghost')">Ghost (7)</button>
+          </div>
+
+          <!-- GRID VIEW -->
+          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-space-md transition-opacity duration-300" id="catalog-grid-view">
+
+            <!-- Pikachu (Selected & Caught) -->
+            <div class="specimen-card cursor-pointer group relative bg-surface-container-lowest p-space-md rounded-xl shadow-md transition-all duration-200 hover:-translate-y-1 bg-gradient-to-b from-secondary-container/10 to-transparent"
+                 onclick="selectSpecimen('025', 'Pikachu', 'Electric', 'Capt', '2024-01-01', true, 85, 90, 75)">
+              <div class="flex items-center justify-between mb-space-xs">
+                <span class="font-label-md text-label-md text-on-surface-variant">#025</span>
+                <div class="w-6 h-6 rounded-full bg-secondary text-on-secondary flex items-center justify-center shadow-sm">
+                  <span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">check</span>
+                </div>
+              </div>
+              <div class="aspect-square w-full rounded-lg bg-surface-container-low flex items-center justify-center overflow-hidden mb-space-sm p-space-sm">
+                <img class="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300"
+                     data-alt="Official high fidelity 3D render of Pikachu the electric rodent Pokémon standing joyfully with cheerful sparks emitting from yellow cheeks against a clean neutral museum studio background with subtle soft shadows"
+                     src="https://lh3.googleusercontent.com/aida-public/AB6AXuAiSdxgdCEYLSBxQ9yzv60_4k0SlA60ttm1eYS1rB3OpYX0Q5IuETKq88URe4sfVCxDo7n1TMgOsNPWJZ0b43tAUEFTwqBzbMcPNPmBZ8bJUfztLesgaCee2Ns0fnI81NB6PDKFsJcEU34UlaYORIheOZ-0YZ9IxsQZtvw0FzOWvoKYUp7mvGo3O-ogXi8Whl_XwpKrHPnbv2JQbeHW_csMt-5FGhWZ4ooRslo5FFXrRfsFwsVewPSG">
+              </div>
+              <div class="flex flex-col">
+                <h3 class="font-headline-sm text-headline-sm text-on-surface">Pikachu</h3>
+                <div class="flex items-center justify-between mt-space-xs">
+                  <span class="px-space-sm py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed font-label-sm text-label-sm uppercase">Electric</span>
+                  <span class="font-body-sm text-body-sm text-secondary font-semibold">Capt</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Sprigatito (Caught) -->
+            <div class="specimen-card cursor-pointer group relative bg-surface-container-lowest p-space-md rounded-xl shadow-sm hover:shadow-md transition-all duration-200 hover:-translate-y-1"
+                 onclick="selectSpecimen('906', 'Sprigatito', 'Grass', 'Nyaa', '2024-01-01', true, 70, 61, 54)">
+              <div class="flex items-center justify-between mb-space-xs">
+                <span class="font-label-md text-label-md text-on-surface-variant">#906</span>
+                <div class="w-6 h-6 rounded-full bg-secondary text-on-secondary flex items-center justify-center shadow-sm">
+                  <span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">check</span>
+                </div>
+              </div>
+              <div class="aspect-square w-full rounded-lg bg-surface-container-low flex items-center justify-center overflow-hidden mb-space-sm p-space-sm">
+                <img class="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300"
+                     data-alt="High detail artistic 3D render of Sprigatito the grass cat Pokémon with pastel green fur and pink flower markings posing gracefully in soft ambient indoor studio light"
+                     src="https://lh3.googleusercontent.com/aida-public/AB6AXuBYZWHrtPD5_yeO-dHH_zPkenC3J-_EoFV-00uUEscE-vRHHN0DBBeAEdNv_zQi2J2Sv-PmTGc4yxtjb5kUirbNTbTOdDMKTwEHo-6ruZrKjoIlEKAxfmFjjm05luIiX_3TQs--rDMU15-nNNo6XQyUNGGTFGGpW1qNSTAaONssHXmBtRuLmXn3W7faLmX76mv7cXxJPAU6hhOAqC_MkV1_-ywSGtkPeQ6p6LfLGiKyUYCcFBdGssTM">
+              </div>
+              <div class="flex flex-col">
+                <h3 class="font-headline-sm text-headline-sm text-on-surface">Sprigatito</h3>
+                <div class="flex items-center justify-between mt-space-xs">
+                  <span class="px-space-sm py-0.5 rounded-full bg-surface-container-high text-on-surface font-label-sm text-label-sm uppercase">Grass</span>
+                  <span class="font-body-sm text-body-sm text-secondary font-semibold">Nyaa</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Bulbasaur (Uncaught) -->
+            <div class="specimen-card cursor-pointer group relative bg-surface-container-lowest p-space-md rounded-xl shadow-sm hover:shadow-md transition-all duration-200 hover:-translate-y-1"
+                 onclick="selectSpecimen('001', 'Bulbasaur', 'Grass / Poison', '', '', false, 45, 49, 49)">
+              <div class="flex items-center justify-between mb-space-xs">
+                <span class="font-label-md text-label-md text-on-surface-variant">#001</span>
+                <div class="w-6 h-6 rounded-full bg-surface-container-high text-on-surface-variant flex items-center justify-center">
+                  <span class="material-symbols-outlined text-[14px]">add</span>
+                </div>
+              </div>
+              <div class="aspect-square w-full rounded-lg bg-surface-container-low flex items-center justify-center overflow-hidden mb-space-sm p-space-sm opacity-80 group-hover:opacity-100 transition-opacity">
+                <img class="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300"
+                     data-alt="Iconic clean front render of Bulbasaur showing the turquoise skin texture and dark spots with plant bulb bud on back against soft daylight setting"
+                     src="https://lh3.googleusercontent.com/aida-public/AB6AXuAiMhT3OQqzqKHuZkQvF8XzJkuFu5MapW0Jzc-eCySQlgEztyv6r4CbiLKtCYkzAoD0zg5iFPYJwQ3qlVvx5Q2xSGgZyb_Le8fQWBh1mcU21LBK3_SnASe_v2t-cwRNFcoNjqjL1GX0v4xTGSvXFSh_K5wleD9UNImFbMEO3eRcddjuqb3VsdAAM7DI67f95AzYBM7dEb6I1hvHYIPwF7_ah13jVRbstTiGXZ6yzoUAqHINtrEouk5E">
+              </div>
+              <div class="flex flex-col">
+                <h3 class="font-headline-sm text-headline-sm text-on-surface">Bulbasaur</h3>
+                <div class="flex items-center justify-between mt-space-xs">
+                  <span class="px-space-sm py-0.5 rounded-full bg-surface-container-high text-on-surface font-label-sm text-label-sm uppercase">Grass</span>
+                  <span class="font-label-sm text-label-sm text-on-surface-variant">Uncaught</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Charmander (Uncaught) -->
+            <div class="specimen-card cursor-pointer group relative bg-surface-container-lowest p-space-md rounded-xl shadow-sm hover:shadow-md transition-all duration-200 hover:-translate-y-1"
+                 onclick="selectSpecimen('004', 'Charmander', 'Fire', '', '', false, 39, 52, 43)">
+              <div class="flex items-center justify-between mb-space-xs">
+                <span class="font-label-md text-label-md text-on-surface-variant">#004</span>
+                <div class="w-6 h-6 rounded-full bg-surface-container-high text-on-surface-variant flex items-center justify-center">
+                  <span class="material-symbols-outlined text-[14px]">add</span>
+                </div>
+              </div>
+              <div class="aspect-square w-full rounded-lg bg-surface-container-low flex items-center justify-center overflow-hidden mb-space-sm p-space-sm opacity-80 group-hover:opacity-100 transition-opacity">
+                <img class="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300"
+                     data-alt="Dynamic studio model of Charmander the orange lizard Pokémon smiling with flickering flame tail light illuminated in a neutral dark-tinted environment"
+                     src="https://lh3.googleusercontent.com/aida-public/AB6AXuColUafov0p0-399S7w-1ivqkrMdzzCQ9aQ2LDIfiKvLrKgMxxXUSpiGVnUsomBj5DMynL7GwuF9PwGvTSgPDn3qV1q4lW72VDjZ8JREwkhSiRFuJzA-GgrPteYr0WqU6PL9LbAW2-Iaf_rwFRHa5-g0M7tmOV7T_kCaJObGbeLxaavAv0jqYlO6Z4hAlxOYYTw2D8QGZJfkea_QRxQGvovsTgJYnA7jLWnhxkUgad7TFgdvjNgiDnf">
+              </div>
+              <div class="flex flex-col">
+                <h3 class="font-headline-sm text-headline-sm text-on-surface">Charmander</h3>
+                <div class="flex items-center justify-between mt-space-xs">
+                  <span class="px-space-sm py-0.5 rounded-full bg-primary-fixed text-on-primary-fixed-variant font-label-sm text-label-sm uppercase">Fire</span>
+                  <span class="font-label-sm text-label-sm text-on-surface-variant">Uncaught</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Squirtle (Caught) -->
+            <div class="specimen-card cursor-pointer group relative bg-surface-container-lowest p-space-md rounded-xl shadow-sm hover:shadow-md transition-all duration-200 hover:-translate-y-1"
+                 onclick="selectSpecimen('007', 'Squirtle', 'Water', 'Shelly', '2024-02-14', true, 44, 48, 65)">
+              <div class="flex items-center justify-between mb-space-xs">
+                <span class="font-label-md text-label-md text-on-surface-variant">#007</span>
+                <div class="w-6 h-6 rounded-full bg-secondary text-on-secondary flex items-center justify-center shadow-sm">
+                  <span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">check</span>
+                </div>
+              </div>
+              <div class="aspect-square w-full rounded-lg bg-surface-container-low flex items-center justify-center overflow-hidden mb-space-sm p-space-sm">
+                <img class="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300"
+                     data-alt="Clean 3D artistic model of Squirtle the water turtle Pokémon with soft curved shell and curled tail smiling in an airy high tech laboratory space"
+                     src="https://lh3.googleusercontent.com/aida-public/AB6AXuB8SDFYUGRvBmYowonuovw8rasZmufmQ8g_BbRCLecSK6scCKOhvuqMd9A8pGBzfDddtoY2S_smPvk-QLp4-AWIPK4GZA_mCTWivMnViXPeo6Iq9_c82AGSWHBndpqQBw2EK4pfvI-mdz6sj0bBeVK9GjS1mUzSJbWJvZEWPqSpqmCwpmLbg08hRMhRnV3VOrPWUzEvTpN9bW2v2D_P949olliJ0elhKEi-tpteBBEm7mSxFk3ddskZ">
+              </div>
+              <div class="flex flex-col">
+                <h3 class="font-headline-sm text-headline-sm text-on-surface">Squirtle</h3>
+                <div class="flex items-center justify-between mt-space-xs">
+                  <span class="px-space-sm py-0.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm uppercase">Water</span>
+                  <span class="font-body-sm text-body-sm text-secondary font-semibold">Shelly</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Gengar (Caught) -->
+            <div class="specimen-card cursor-pointer group relative bg-surface-container-lowest p-space-md rounded-xl shadow-sm hover:shadow-md transition-all duration-200 hover:-translate-y-1"
+                 onclick="selectSpecimen('094', 'Gengar', 'Ghost / Poison', 'Spooky', '2023-10-31', true, 60, 65, 60)">
+              <div class="flex items-center justify-between mb-space-xs">
+                <span class="font-label-md text-label-md text-on-surface-variant">#094</span>
+                <div class="w-6 h-6 rounded-full bg-secondary text-on-secondary flex items-center justify-center shadow-sm">
+                  <span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">check</span>
+                </div>
+              </div>
+              <div class="aspect-square w-full rounded-lg bg-surface-container-low flex items-center justify-center overflow-hidden mb-space-sm p-space-sm">
+                <img class="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300"
+                     data-alt="High detail shaded 3D render of Gengar laughing mischievously with glowing red eyes in a studio environment with subtle purple rim light"
+                     src="https://lh3.googleusercontent.com/aida-public/AB6AXuCltgaChkbM76wol7ZZlCHUcFl5srXUuDdWZD2-qeQJ8bDPKxagMddpGl4bMSerznFKZa0zBOf44XqAXsiaJdd52t6s8QXAkBHx4hg8t_6feClRL9VAn_bKESse7PAXkHoj_-F-RH1wHg_mWGAPf78t7vo2dLAqeTIkpc-KGSN_CTlf_Wh7WpbqKm4qOtZTr6KGH7x2kTmR1u7ZZktgMP5hvowpWr-hVAU49ukMez3iHYoeugR0a7X3">
+              </div>
+              <div class="flex flex-col">
+                <h3 class="font-headline-sm text-headline-sm text-on-surface">Gengar</h3>
+                <div class="flex items-center justify-between mt-space-xs">
+                  <span class="px-space-sm py-0.5 rounded-full bg-surface-container-high text-on-surface font-label-sm text-label-sm uppercase">Ghost</span>
+                  <span class="font-body-sm text-body-sm text-secondary font-semibold">Spooky</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Lucario (Uncaught) -->
+            <div class="specimen-card cursor-pointer group relative bg-surface-container-lowest p-space-md rounded-xl shadow-sm hover:shadow-md transition-all duration-200 hover:-translate-y-1"
+                 onclick="selectSpecimen('448', 'Lucario', 'Fighting / Steel', '', '', false, 70, 110, 70)">
+              <div class="flex items-center justify-between mb-space-xs">
+                <span class="font-label-md text-label-md text-on-surface-variant">#448</span>
+                <div class="w-6 h-6 rounded-full bg-surface-container-high text-on-surface-variant flex items-center justify-center">
+                  <span class="material-symbols-outlined text-[14px]">add</span>
+                </div>
+              </div>
+              <div class="aspect-square w-full rounded-lg bg-surface-container-low flex items-center justify-center overflow-hidden mb-space-sm p-space-sm opacity-80 group-hover:opacity-100 transition-opacity">
+                <img class="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300"
+                     data-alt="Heroic stance of Lucario the aura Pokémon with blue and black bipedal frame in modern minimalist high key rendering studio"
+                     src="https://lh3.googleusercontent.com/aida-public/AB6AXuBKp-itbmpQgeXU_MSoMnngR_8mSa09pAZfBbS7QPnEZ1XH4XTL63N0WlNySiJDHuGpNNYQaNS5mCWShFwzHk-IKTAp9AKyNJAccunnPQGpTEUl6iaNLjUjYAdtthZWDkVhY8NQc4--IjaUcHzKpzTy70lD21DKzgM6C6K32Ug6SSYFa7782zyfM-aYQoKPyEv5dUd5foTmriAQTZtfMzek-G-sIae3hvidIgBh1JEriLgiiuJnwXz_">
+              </div>
+              <div class="flex flex-col">
+                <h3 class="font-headline-sm text-headline-sm text-on-surface">Lucario</h3>
+                <div class="flex items-center justify-between mt-space-xs">
+                  <span class="px-space-sm py-0.5 rounded-full bg-surface-container-high text-on-surface font-label-sm text-label-sm uppercase">Fighting</span>
+                  <span class="font-label-sm text-label-sm text-on-surface-variant">Uncaught</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Eevee (Caught) -->
+            <div class="specimen-card cursor-pointer group relative bg-surface-container-lowest p-space-md rounded-xl shadow-sm hover:shadow-md transition-all duration-200 hover:-translate-y-1"
+                 onclick="selectSpecimen('133', 'Eevee', 'Normal', 'Fluffy', '2024-03-02', true, 55, 55, 50)">
+              <div class="flex items-center justify-between mb-space-xs">
+                <span class="font-label-md text-label-md text-on-surface-variant">#133</span>
+                <div class="w-6 h-6 rounded-full bg-secondary text-on-secondary flex items-center justify-center shadow-sm">
+                  <span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">check</span>
+                </div>
+              </div>
+              <div class="aspect-square w-full rounded-lg bg-surface-container-low flex items-center justify-center overflow-hidden mb-space-sm p-space-sm">
+                <img class="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300"
+                     data-alt="Detailed warm 3D artwork of Eevee sitting playfully with fluffy cream neck ruff and bushy brown tail in soft gentle studio lighting"
+                     src="https://lh3.googleusercontent.com/aida-public/AB6AXuBudhI6wvEaPZK3v6g5WkfiBecBsYkM5_SMjRvQSSLRNCwMHYcLlE9CzgG913UfJqnm6eKpo0WUzTx3RDJ_MeoE7Xwd7RZgKgwppMrbsdz5Jl8AWzmHcykSoSp-uXERTRLfdkpTsjU-BGuIj4ah9qPYauhclnT6ccxk81Skpz0ZGzRzoXRvnDkYR0g7OCcK3A2PEtAhhiK9U8bQ0hKqEfoa1Rr-yKoXTrymhlSC7G8j_zcgp6N1SCKk">
+              </div>
+              <div class="flex flex-col">
+                <h3 class="font-headline-sm text-headline-sm text-on-surface">Eevee</h3>
+                <div class="flex items-center justify-between mt-space-xs">
+                  <span class="px-space-sm py-0.5 rounded-full bg-surface-container-high text-on-surface font-label-sm text-label-sm uppercase">Normal</span>
+                  <span class="font-body-sm text-body-sm text-secondary font-semibold">Fluffy</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- LIST VIEW -->
+          <div class="hidden flex flex-col gap-space-sm transition-opacity duration-300" id="catalog-list-view">
+
+            <!-- Row 1: Pikachu -->
+            <div class="captured-row flex items-center justify-between p-space-md bg-surface-container-lowest rounded-xl shadow-sm hover:shadow-md transition-all duration-200 group">
+              <div class="flex items-center gap-space-md cursor-pointer flex-1"
+                   onclick="selectSpecimen('025', 'Pikachu', 'Electric', 'Capt', '2024-01-01', true, 85, 90, 75)">
+                <div class="w-14 h-14 rounded-lg bg-secondary-container/20 flex items-center justify-center p-space-xs shrink-0">
+                  <img class="w-full h-full object-contain"
+                       data-alt="Close up profile avatar of Pikachu with bright energetic expression on clean white background"
+                       src="https://lh3.googleusercontent.com/aida-public/AB6AXuAJVuVbJESgnoc43T7ToKRtR2Qk7qCqGEvHaJJhoT8-xiaDNcvcHspM57BY63EDPCe00rPG476n-0sE0dAwgQNmNIKG1S6u2RL_LK2mk-UsWsOe-719OLdoIR6GBq7KsKS4e_niRQwFshnONKZT4ppoeYnkch2ETqOZO6_jQppC0hYU9DJPGY9gzvCcSMpHzIoaIMfuRVzrnrM_ulUsR1f2WDcDXKh9ohHSLzVe5nsBHalIzzwN54UQ">
+                </div>
+                <div class="flex flex-col">
+                  <div class="flex items-center gap-space-sm">
+                    <span class="font-headline-sm text-headline-sm text-on-surface">Pikachu</span>
+                    <span class="font-label-sm text-label-sm text-on-surface-variant font-mono">#025</span>
+                    <span class="px-space-sm py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed font-label-sm text-label-sm uppercase">Electric</span>
+                  </div>
+                  <div class="flex flex-wrap items-center gap-x-space-md gap-y-0.5 mt-1 font-body-sm text-body-sm text-on-surface-variant">
+                    <span>Nickname: <strong class="text-on-surface font-semibold">Capt</strong></span>
+                    <span class="text-surface-container-highest">•</span>
+                    <span>Captured: <strong class="text-on-surface">2024-01-01</strong></span>
+                    <span class="text-surface-container-highest">•</span>
+                    <span class="text-secondary font-medium">Ultra Ball</span>
+                  </div>
+                </div>
+              </div>
+              <button class="w-10 h-10 rounded-lg bg-surface-container-low text-on-surface-variant hover:bg-error-container hover:text-on-error-container flex items-center justify-center transition-colors shrink-0"
+                      onclick="confirmRelease(this, 'Pikachu')" title="Release specimen">
+                <span class="material-symbols-outlined text-[20px]">close</span>
+              </button>
+            </div>
+
+            <!-- Row 2: Sprigatito -->
+            <div class="captured-row flex items-center justify-between p-space-md bg-surface-container-lowest rounded-xl shadow-sm hover:shadow-md transition-all duration-200 group">
+              <div class="flex items-center gap-space-md cursor-pointer flex-1"
+                   onclick="selectSpecimen('906', 'Sprigatito', 'Grass', 'Nyaa', '2024-01-01', true, 70, 61, 54)">
+                <div class="w-14 h-14 rounded-lg bg-surface-container-high flex items-center justify-center p-space-xs shrink-0">
+                  <img class="w-full h-full object-contain"
+                       data-alt="Icon profile shot of Sprigatito face with big emerald eyes looking straight ahead"
+                       src="https://lh3.googleusercontent.com/aida-public/AB6AXuCuMUwLQVvyTxVPSMVXxuqqwGeLcGFSeyPHyZtGMQL9cke8BRbBn0OUjt21hGuJBKKDMsJGxUiRmORR8UwAXG-WYqjgwltn7YIaECED5sVMpvbuqaLjwkhasc16tTpf9Qq3OcH1FVZRyHjTkjkUTQUrMS87mRYtYyYqYoEkVSkB77pRu5aaSzCRUSGUGzckIrbkkSqewu_JVGp1QLr9eyf4bnj6XkJPq3hbXcKrcqSV3VTizM_jxUr3">
+                </div>
+                <div class="flex flex-col">
+                  <div class="flex items-center gap-space-sm">
+                    <span class="font-headline-sm text-headline-sm text-on-surface">Sprigatito</span>
+                    <span class="font-label-sm text-label-sm text-on-surface-variant font-mono">#906</span>
+                    <span class="px-space-sm py-0.5 rounded-full bg-surface-container-high text-on-surface font-label-sm text-label-sm uppercase">Grass</span>
+                  </div>
+                  <div class="flex flex-wrap items-center gap-x-space-md gap-y-0.5 mt-1 font-body-sm text-body-sm text-on-surface-variant">
+                    <span>Nickname: <strong class="text-on-surface font-semibold">Nyaa</strong></span>
+                    <span class="text-surface-container-highest">•</span>
+                    <span>Captured: <strong class="text-on-surface">2024-01-01</strong></span>
+                    <span class="text-surface-container-highest">•</span>
+                    <span class="text-tertiary font-medium">Friend Ball</span>
+                  </div>
+                </div>
+              </div>
+              <button class="w-10 h-10 rounded-lg bg-surface-container-low text-on-surface-variant hover:bg-error-container hover:text-on-error-container flex items-center justify-center transition-colors shrink-0"
+                      onclick="confirmRelease(this, 'Sprigatito')" title="Release specimen">
+                <span class="material-symbols-outlined text-[20px]">close</span>
+              </button>
+            </div>
+
+            <!-- Row 3: Squirtle -->
+            <div class="captured-row flex items-center justify-between p-space-md bg-surface-container-lowest rounded-xl shadow-sm hover:shadow-md transition-all duration-200 group">
+              <div class="flex items-center gap-space-md cursor-pointer flex-1"
+                   onclick="selectSpecimen('007', 'Squirtle', 'Water', 'Shelly', '2024-02-14', true, 44, 48, 65)">
+                <div class="w-14 h-14 rounded-lg bg-tertiary-fixed/30 flex items-center justify-center p-space-xs shrink-0">
+                  <img class="w-full h-full object-contain"
+                       data-alt="Profile thumbnail of Squirtle smiling warmly on transparent clean surface"
+                       src="https://lh3.googleusercontent.com/aida-public/AB6AXuBbmCksY9EekiseYULXX_ijd9LEfI3cPNZoYoTYjFZuZUdw95N1QB2SbOPPwdmcHScV2JpolzrUkUGXnYAf4g5u1PH9kb6ZOG629bjbFxsa8RCbOumAwrfIIHqE0tBBYPDHoOH9ZcPZcqaeTNY29HF6tQ8q_ja-Ul-NIojOGyI15bQoOna9gMkL_NIK98Q7D9z-T3L311fF5ZdUCQcoZT8U0XV7NyBS1LCG3YFHHLjfvI9QkgduqPlV">
+                </div>
+                <div class="flex flex-col">
+                  <div class="flex items-center gap-space-sm">
+                    <span class="font-headline-sm text-headline-sm text-on-surface">Squirtle</span>
+                    <span class="font-label-sm text-label-sm text-on-surface-variant font-mono">#007</span>
+                    <span class="px-space-sm py-0.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm uppercase">Water</span>
+                  </div>
+                  <div class="flex flex-wrap items-center gap-x-space-md gap-y-0.5 mt-1 font-body-sm text-body-sm text-on-surface-variant">
+                    <span>Nickname: <strong class="text-on-surface font-semibold">Shelly</strong></span>
+                    <span class="text-surface-container-highest">•</span>
+                    <span>Captured: <strong class="text-on-surface">2024-02-14</strong></span>
+                    <span class="text-surface-container-highest">•</span>
+                    <span class="text-tertiary font-medium">Dive Ball</span>
+                  </div>
+                </div>
+              </div>
+              <button class="w-10 h-10 rounded-lg bg-surface-container-low text-on-surface-variant hover:bg-error-container hover:text-on-error-container flex items-center justify-center transition-colors shrink-0"
+                      onclick="confirmRelease(this, 'Squirtle')" title="Release specimen">
+                <span class="material-symbols-outlined text-[20px]">close</span>
+              </button>
+            </div>
+
+            <!-- Row 4: Gengar -->
+            <div class="captured-row flex items-center justify-between p-space-md bg-surface-container-lowest rounded-xl shadow-sm hover:shadow-md transition-all duration-200 group">
+              <div class="flex items-center gap-space-md cursor-pointer flex-1"
+                   onclick="selectSpecimen('094', 'Gengar', 'Ghost / Poison', 'Spooky', '2023-10-31', true, 60, 65, 60)">
+                <div class="w-14 h-14 rounded-lg bg-surface-container-high flex items-center justify-center p-space-xs shrink-0">
+                  <img class="w-full h-full object-contain"
+                       data-alt="Close up face render of purple Gengar with crimson eyes in dark minimal studio"
+                       src="https://lh3.googleusercontent.com/aida-public/AB6AXuCXZAMotcOH9NT4WSu3Ya7gmKGtTjQgqgiLF8m2Lsptq0coC_faXshtKAKeRl6vlA5BEp-mgxhTh8orVDosOJ_rdq02jTtqyZqPehW-mdah__UOr5hoq-yhBnpnTQuprC7qiDYARHgnefEyA5JFFD7bGFvqDA7h56HWUjJFJDLfG7c-po3WPEO8D5LFPeQtfrW9G8TD_3znlnJmcDfVcy_GIulV_TVGubuQyUsUq0hQ4WhNuo-xH6ry">
+                </div>
+                <div class="flex flex-col">
+                  <div class="flex items-center gap-space-sm">
+                    <span class="font-headline-sm text-headline-sm text-on-surface">Gengar</span>
+                    <span class="font-label-sm text-label-sm text-on-surface-variant font-mono">#094</span>
+                    <span class="px-space-sm py-0.5 rounded-full bg-surface-container-high text-on-surface font-label-sm text-label-sm uppercase">Ghost</span>
+                  </div>
+                  <div class="flex flex-wrap items-center gap-x-space-md gap-y-0.5 mt-1 font-body-sm text-body-sm text-on-surface-variant">
+                    <span>Nickname: <strong class="text-on-surface font-semibold">Spooky</strong></span>
+                    <span class="text-surface-container-highest">•</span>
+                    <span>Captured: <strong class="text-on-surface">2023-10-31</strong></span>
+                    <span class="text-surface-container-highest">•</span>
+                    <span class="text-primary font-medium">Dusk Ball</span>
+                  </div>
+                </div>
+              </div>
+              <button class="w-10 h-10 rounded-lg bg-surface-container-low text-on-surface-variant hover:bg-error-container hover:text-on-error-container flex items-center justify-center transition-colors shrink-0"
+                      onclick="confirmRelease(this, 'Gengar')" title="Release specimen">
+                <span class="material-symbols-outlined text-[20px]">close</span>
+              </button>
+            </div>
+
+            <!-- Row 5: Eevee -->
+            <div class="captured-row flex items-center justify-between p-space-md bg-surface-container-lowest rounded-xl shadow-sm hover:shadow-md transition-all duration-200 group">
+              <div class="flex items-center gap-space-md cursor-pointer flex-1"
+                   onclick="selectSpecimen('133', 'Eevee', 'Normal', 'Fluffy', '2024-03-02', true, 55, 55, 50)">
+                <div class="w-14 h-14 rounded-lg bg-surface-container-high flex items-center justify-center p-space-xs shrink-0">
+                  <img class="w-full h-full object-contain"
+                       data-alt="Portrait rendering of sweet brown Eevee head with erect ears and shining eyes"
+                       src="https://lh3.googleusercontent.com/aida-public/AB6AXuD1TytMlT9Zl7SSG_LjBDzKUFhZlYl5n3jq55Bxkj0s5SK0vL1t-BceegmbcrG8bRGqzdt347D4OeEetus9yp1zRdNGyoxxEIJCxqLK3N0sYsdArLUhZIo9vDLYkzKMfH2u9VNMQe1sqqEDw_PxENcFqDS6hy-pCt6tKedSvzjaj3T5O7b5ikDSX4ZC3yPA3mvzMbtZBBxO5D9uELOsekemEM_q80jhlPW8wMsCd4alboHTCBgscRB0">
+                </div>
+                <div class="flex flex-col">
+                  <div class="flex items-center gap-space-sm">
+                    <span class="font-headline-sm text-headline-sm text-on-surface">Eevee</span>
+                    <span class="font-label-sm text-label-sm text-on-surface-variant font-mono">#133</span>
+                    <span class="px-space-sm py-0.5 rounded-full bg-surface-container-high text-on-surface font-label-sm text-label-sm uppercase">Normal</span>
+                  </div>
+                  <div class="flex flex-wrap items-center gap-x-space-md gap-y-0.5 mt-1 font-body-sm text-body-sm text-on-surface-variant">
+                    <span>Nickname: <strong class="text-on-surface font-semibold">Fluffy</strong></span>
+                    <span class="text-surface-container-highest">•</span>
+                    <span>Captured: <strong class="text-on-surface">2024-03-02</strong></span>
+                    <span class="text-surface-container-highest">•</span>
+                    <span class="text-secondary font-medium">Luxury Ball</span>
+                  </div>
+                </div>
+              </div>
+              <button class="w-10 h-10 rounded-lg bg-surface-container-low text-on-surface-variant hover:bg-error-container hover:text-on-error-container flex items-center justify-center transition-colors shrink-0"
+                      onclick="confirmRelease(this, 'Eevee')" title="Release specimen">
+                <span class="material-symbols-outlined text-[20px]">close</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Load More Paginator -->
+          <div class="flex justify-center my-space-sm">
+            <button class="px-space-xl py-space-sm rounded-full bg-surface-container text-on-surface hover:bg-surface-container-high font-label-md text-label-md flex items-center gap-space-xs transition-colors">
+              <span>Load more entries (143 remaining)</span>
+              <span class="material-symbols-outlined text-[16px]">expand_more</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- RIGHT COLUMN: Inspector Drawer -->
+        <div class="lg:col-span-5 xl:col-span-4 sticky top-24">
+          <div class="bg-surface-container-lowest rounded-xl shadow-md p-space-lg flex flex-col gap-space-lg">
+
+            <!-- Top Drawer Header -->
+            <div class="flex items-center justify-between">
+              <button class="inline-flex items-center gap-space-xs font-label-md text-label-md text-tertiary hover:underline" onclick="resetInspector()">
+                <span class="material-symbols-outlined text-[18px]">arrow_back</span>
+                <span>All Specimens</span>
+              </button>
+              <div class="flex items-center gap-space-xs">
+                <span class="px-space-sm py-0.5 rounded bg-surface-container font-mono font-label-sm text-label-sm text-on-surface-variant" id="specimen-dex-tag">#025</span>
+                <span class="px-space-sm py-0.5 rounded-full bg-secondary-container/30 text-on-secondary-fixed-variant font-label-sm text-label-sm font-bold flex items-center gap-1" id="specimen-status-chip">
+                  <span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+                  <span>Captured</span>
+                </span>
+              </div>
+            </div>
+
+            <!-- Selected Specimen Photo Frame -->
+            <div class="relative w-full aspect-[4/3] rounded-xl bg-gradient-to-tr from-surface-container-high via-surface-container-low to-surface-container-lowest flex items-center justify-center p-space-md overflow-hidden">
+              <div class="absolute inset-0 flex items-center justify-center opacity-10 pointer-events-none">
+                <svg class="w-48 h-48 animate-spin" style="animation-duration: 30s;" viewBox="0 0 100 100">
+                  <circle class="text-on-surface" cx="50" cy="50" fill="none" r="45" stroke="currentColor" stroke-dasharray="6 4" stroke-width="1.5"></circle>
+                  <circle class="text-on-surface" cx="50" cy="50" fill="none" r="28" stroke="currentColor" stroke-width="1"></circle>
+                </svg>
+              </div>
+              <img class="w-full h-full object-contain relative z-10 drop-shadow-lg transition-transform duration-300 hover:scale-105"
+                   data-alt="Full body cinematic studio photograph of Pikachu standing proudly on reflective pedestal illuminated with warm yellow electrical ambient rim light and deep contrast"
+                   id="detail-specimen-img"
+                   src="https://lh3.googleusercontent.com/aida-public/AB6AXuAGWY6lMeoah9kf0m9l-sMVqG1EuSqbr3K9F4WrCIIm1FPXSMfOhLENZxPyKa9MT_ZTmrcyR5HIPhTX_iDllqZPZS1oB5I7JruOAKEQZwyzJcvBeRDgxjP7ybupeiJlKxDRYppksSjpxGCtwGarKgn6egeDL8gXkQ3y3-Pk8lKHzoJciVhebJkIFEJwN1X1oTM1OhIuB4a4n5xjPaZthqtV75HNJJZ1M8PJj7TejlgmQ_LAJCC3Ovas">
+              <div class="absolute bottom-space-md left-space-md z-20">
+                <span class="px-space-md py-1 rounded-full bg-secondary-fixed text-on-secondary-fixed font-label-sm text-label-sm uppercase font-bold shadow-sm" id="detail-specimen-type">Electric</span>
+              </div>
+            </div>
+
+            <!-- Name & Bio Snippet -->
+            <div>
+              <h2 class="font-headline-lg text-headline-lg text-on-surface tracking-tight" id="detail-specimen-name">Pikachu</h2>
+              <p class="font-body-md text-body-md text-on-surface-variant mt-1" id="detail-specimen-desc">
+                When several of these gather, their electricity could build and cause lightning storms. Known for storing electricity in cheeks.
+              </p>
+            </div>
+
+            <!-- Combat Calibration Stats -->
+            <div class="bg-surface-container-low p-space-md rounded-xl flex flex-col gap-space-sm">
+              <div class="flex items-center justify-between">
+                <span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider font-bold">&lt;Pokemon Details&gt;</span>
+                <span class="font-label-sm text-label-sm text-tertiary">Base Stat Total: 320</span>
+              </div>
+              <div class="flex flex-col gap-1">
+                <div class="flex justify-between font-label-sm text-label-sm">
+                  <span class="text-on-surface-variant font-medium">HP (Health)</span>
+                  <span class="font-bold text-on-surface" id="stat-hp-val">85</span>
+                </div>
+                <div class="w-full bg-surface-container-highest rounded-full h-2 overflow-hidden">
+                  <div class="bg-primary h-full rounded-full transition-all duration-500" id="stat-hp-bar" style="width: 55%"></div>
+                </div>
+              </div>
+              <div class="flex flex-col gap-1">
+                <div class="flex justify-between font-label-sm text-label-sm">
+                  <span class="text-on-surface-variant font-medium">Attack</span>
+                  <span class="font-bold text-on-surface" id="stat-atk-val">90</span>
+                </div>
+                <div class="w-full bg-surface-container-highest rounded-full h-2 overflow-hidden">
+                  <div class="bg-secondary h-full rounded-full transition-all duration-500" id="stat-atk-bar" style="width: 65%"></div>
+                </div>
+              </div>
+              <div class="flex flex-col gap-1">
+                <div class="flex justify-between font-label-sm text-label-sm">
+                  <span class="text-on-surface-variant font-medium">Defense</span>
+                  <span class="font-bold text-on-surface" id="stat-def-val">75</span>
+                </div>
+                <div class="w-full bg-surface-container-highest rounded-full h-2 overflow-hidden">
+                  <div class="bg-tertiary h-full rounded-full transition-all duration-500" id="stat-def-bar" style="width: 48%"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Status / Capture Form -->
+            <div class="bg-surface-container-low p-space-md rounded-xl flex flex-col gap-space-md">
+              <div class="flex items-center justify-between">
+                <h3 class="font-label-lg text-label-lg text-on-surface font-bold uppercase tracking-wider">Status &amp; Log</h3>
+                <span class="material-symbols-outlined text-secondary text-[20px]">20mp</span>
+              </div>
+
+              <div class="flex flex-col gap-1">
+                <label class="font-label-sm text-label-sm uppercase text-on-surface-variant" for="input-nickname">Nickname</label>
+                <div class="relative">
+                  <input class="w-full px-space-md py-space-sm rounded-lg bg-secondary-container/15 text-on-surface placeholder:text-on-surface-variant font-body-md text-body-md focus:outline-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-secondary transition-all"
+                         id="input-nickname" placeholder="Enter Nickname" type="text" value="Capt">
+                  <span class="material-symbols-outlined absolute right-space-md top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px]">badge</span>
+                </div>
+              </div>
+
+              <div class="flex flex-col gap-1">
+                <label class="font-label-sm text-label-sm uppercase text-on-surface-variant" for="input-date">Capture Date (YYYY-MM-DD)</label>
+                <div class="relative">
+                  <input class="w-full px-space-md py-space-sm rounded-lg bg-secondary-container/15 text-on-surface placeholder:text-on-surface-variant font-body-md text-body-md focus:outline-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-secondary transition-all"
+                         id="input-date" type="date" value="2024-01-01">
+                  <span class="material-symbols-outlined absolute right-space-md top-1/2 -translate-y-1/2 text-on-surface-variant text-[18px]">event</span>
+                </div>
+              </div>
+
+              <div class="flex flex-col gap-1">
+                <label class="font-label-sm text-label-sm uppercase text-on-surface-variant">Containment Device</label>
+                <div class="grid grid-cols-4 gap-space-xs">
+                  <button class="ball-choice p-2 rounded-lg bg-surface-container-lowest text-on-surface text-center font-label-sm text-label-sm shadow-sm hover:bg-surface-container-high transition-colors font-bold text-secondary" onclick="setBall('ultra')">Ultra</button>
+                  <button class="ball-choice p-2 rounded-lg bg-surface-container text-on-surface-variant text-center font-label-sm text-label-sm hover:bg-surface-container-high transition-colors" onclick="setBall('great')">Great</button>
+                  <button class="ball-choice p-2 rounded-lg bg-surface-container text-on-surface-variant text-center font-label-sm text-label-sm hover:bg-surface-container-high transition-colors" onclick="setBall('poke')">Poké</button>
+                  <button class="ball-choice p-2 rounded-lg bg-surface-container text-on-surface-variant text-center font-label-sm text-label-sm hover:bg-surface-container-high transition-colors" onclick="setBall('master')">Master</button>
+                </div>
+              </div>
+
+              <div class="flex flex-col gap-space-xs pt-space-xs">
+                <button class="w-full py-space-md px-space-lg rounded-xl font-headline-sm text-headline-sm text-on-primary bg-primary hover:bg-primary-container active:scale-[0.98] shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-space-sm"
+                        id="tag-capture-btn" onclick="toggleCaptureState()">
+                  <span class="material-symbols-outlined text-[20px]" id="capture-btn-icon">check_circle</span>
+                  <span id="capture-btn-label">Update Capture Log</span>
+                </button>
+                <button class="w-full py-space-sm px-space-md rounded-xl font-label-md text-label-md text-tertiary bg-surface-container hover:bg-surface-container-high transition-colors flex items-center justify-center gap-space-xs"
+                        onclick="handleShareDexCard()">
+                  <span class="material-symbols-outlined text-[16px]">qr_code_2</span>
+                  <span>Export Field Sighting Card</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive toast message -->
+      <div class="fixed bottom-6 right-6 z-50 transform translate-y-24 opacity-0 transition-all duration-300 pointer-events-none bg-inverse-surface text-inverse-on-surface px-space-lg py-space-md rounded-xl shadow-xl flex items-center gap-space-sm"
+           id="dex-toast">
+        <span class="material-symbols-outlined text-secondary text-[20px]">verified</span>
+        <span class="font-body-md text-body-md font-medium" id="dex-toast-message">Log updated successfully</span>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="w-full bg-surface-container-low py-space-xl mt-space-xl shadow-[0_-1px_6px_rgba(0,0,0,0.02)]">
+    <div class="max-w-[1280px] mx-auto px-margin md:px-margin-tablet lg:px-margin-desktop flex flex-col md:flex-row items-center justify-between gap-space-md">
+      <div class="flex items-center gap-space-sm">
+        <span class="font-label-lg text-label-lg text-on-surface">PokéDex Companion Archive</span>
+        <span class="text-on-surface-variant font-body-sm text-body-sm">• National &amp; Regional Indexes</span>
+      </div>
+      <div class="font-body-sm text-body-sm text-on-surface-variant text-center md:text-right">
+        © 2024 PokéDex Tracker. Creature data sourced for fan collection &amp; tracking.
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script>
+    let currentCaughtStatus = true;
+    let activeTab = 'all';
+
+    function switchMainTab(tab) {
+      activeTab = tab;
+      const tabAll = document.getElementById('view-tab-all');
+      const tabCaptured = document.getElementById('view-tab-captured');
+      const gridView = document.getElementById('catalog-grid-view');
+      const listView = document.getElementById('catalog-list-view');
+
+      if (tab === 'all') {
+        tabAll.className = "flex items-center gap-space-xs px-space-md py-space-xs rounded-lg font-label-md text-label-md bg-surface-container-lowest text-on-surface shadow-sm transition-all duration-200";
+        tabCaptured.className = "flex items-center gap-space-xs px-space-md py-space-xs rounded-lg font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-all duration-200";
+        gridView.classList.remove('hidden');
+        listView.classList.add('hidden');
+      } else {
+        tabCaptured.className = "flex items-center gap-space-xs px-space-md py-space-xs rounded-lg font-label-md text-label-md bg-surface-container-lowest text-on-surface shadow-sm transition-all duration-200";
+        tabAll.className = "flex items-center gap-space-xs px-space-md py-space-xs rounded-lg font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-all duration-200";
+        gridView.classList.add('hidden');
+        listView.classList.remove('hidden');
+      }
+    }
+
+    function setDisplayLayout(layout) {
+      const gridBtn = document.getElementById('toggle-grid-btn');
+      const listBtn = document.getElementById('toggle-list-btn');
+      const gridView = document.getElementById('catalog-grid-view');
+      const listView = document.getElementById('catalog-list-view');
+
+      if (layout === 'grid') {
+        gridBtn.className = "p-1.5 rounded bg-surface-container-lowest text-on-surface shadow-sm";
+        listBtn.className = "p-1.5 rounded text-on-surface-variant hover:text-on-surface transition-colors";
+        gridView.classList.remove('hidden');
+        listView.classList.add('hidden');
+      } else {
+        listBtn.className = "p-1.5 rounded bg-surface-container-lowest text-on-surface shadow-sm";
+        gridBtn.className = "p-1.5 rounded text-on-surface-variant hover:text-on-surface transition-colors";
+        listView.classList.remove('hidden');
+        gridView.classList.add('hidden');
+      }
+    }
+
+    function selectSpecimen(id, name, type, nickname, date, caught, hp, atk, def) {
+      document.getElementById('specimen-dex-tag').innerText = '#' + id;
+      document.getElementById('detail-specimen-name').innerText = name;
+      document.getElementById('detail-specimen-type').innerText = type.split('/')[0].trim();
+      document.getElementById('input-nickname').value = nickname || '';
+      document.getElementById('input-date').value = date || new Date().toISOString().split('T')[0];
+
+      document.getElementById('stat-hp-val').innerText = hp;
+      document.getElementById('stat-atk-val').innerText = atk;
+      document.getElementById('stat-def-val').innerText = def;
+      document.getElementById('stat-hp-bar').style.width = Math.min(100, Math.round((hp / 130) * 100)) + '%';
+      document.getElementById('stat-atk-bar').style.width = Math.min(100, Math.round((atk / 130) * 100)) + '%';
+      document.getElementById('stat-def-bar').style.width = Math.min(100, Math.round((def / 130) * 100)) + '%';
+
+      currentCaughtStatus = caught;
+      updateInspectorStatusUI(caught);
+      showToast("Loaded " + name + " details");
+    }
+
+    function updateInspectorStatusUI(caught) {
+      const statusChip = document.getElementById('specimen-status-chip');
+      const btnLabel = document.getElementById('capture-btn-label');
+      const btnIcon = document.getElementById('capture-btn-icon');
+      const btn = document.getElementById('tag-capture-btn');
+
+      if (caught) {
+        statusChip.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span><span>Captured</span>';
+        statusChip.className = "px-space-sm py-0.5 rounded-full bg-secondary-container/30 text-on-secondary-fixed-variant font-label-sm text-label-sm font-bold flex items-center gap-1";
+        btnLabel.innerText = "Update Capture Log";
+        btnIcon.innerText = "check_circle";
+        btn.className = "w-full py-space-md px-space-lg rounded-xl font-headline-sm text-headline-sm text-on-primary bg-primary hover:bg-primary-container active:scale-[0.98] shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-space-sm";
+      } else {
+        statusChip.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-on-surface-variant"></span><span>Unregistered</span>';
+        statusChip.className = "px-space-sm py-0.5 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-label-sm font-bold flex items-center gap-1";
+        btnLabel.innerText = "Tag as Captured";
+        btnIcon.innerText = "add_task";
+        btn.className = "w-full py-space-md px-space-lg rounded-xl font-headline-sm text-headline-sm text-on-primary bg-tertiary hover:bg-tertiary-container active:scale-[0.98] shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-space-sm";
+      }
+    }
+
+    function toggleCaptureState() {
+      currentCaughtStatus = !currentCaughtStatus;
+      updateInspectorStatusUI(currentCaughtStatus);
+      const nick = document.getElementById('input-nickname').value || document.getElementById('detail-specimen-name').innerText;
+      showToast(currentCaughtStatus ? nick + " marked as Captured!" : "Specimen tagged as Unregistered");
+    }
+
+    function confirmRelease(btnElement, name) {
+      const row = btnElement.closest('.captured-row');
+      if (row) {
+        row.style.opacity = '0';
+        row.style.transform = 'translateX(20px)';
+        setTimeout(() => {
+          row.remove();
+          showToast(name + " has been released to the wild.");
+          const counter = document.getElementById('kpi-caught-counter');
+          const badge = document.getElementById('captured-badge-count');
+          const nextVal = Math.max(0, parseInt(counter.innerText) - 1);
+          counter.innerText = nextVal;
+          badge.innerText = nextVal;
+        }, 250);
+      }
+    }
+
+    function setBall(type) {
+      document.querySelectorAll('.ball-choice').forEach(b => {
+        b.className = "ball-choice p-2 rounded-lg bg-surface-container text-on-surface-variant text-center font-label-sm text-label-sm hover:bg-surface-container-high transition-colors";
+      });
+      event.currentTarget.className = "ball-choice p-2 rounded-lg bg-surface-container-lowest text-on-surface text-center font-label-sm text-label-sm shadow-sm hover:bg-surface-container-high transition-colors font-bold text-secondary";
+      showToast("Ball calibrated: " + type.toUpperCase());
+    }
+
+    function filterCreatures(query) {
+      const q = query.toLowerCase();
+      document.querySelectorAll('.specimen-card').forEach(card => {
+        const txt = card.innerText.toLowerCase();
+        card.style.display = txt.includes(q) ? 'block' : 'none';
+      });
+    }
+
+    function filterByType(type) {
+      document.querySelectorAll('.element-tag').forEach(t => {
+        t.classList.remove('bg-on-surface', 'text-on-primary');
+      });
+      event.currentTarget.classList.add('bg-on-surface', 'text-on-primary');
+
+      document.querySelectorAll('.specimen-card').forEach(card => {
+        if (type === 'all') {
+          card.style.display = 'block';
+        } else {
+          const text = card.innerText.toLowerCase();
+          card.style.display = text.includes(type) ? 'block' : 'none';
+        }
+      });
+      showToast("Filtered by " + type.toUpperCase());
+    }
+
+    function resetInspector() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      showToast("Returned to primary catalog view");
+    }
+
+    function handleShareDexCard() {
+      showToast("Dex Field Card exported to clipboard");
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('dex-toast');
+      const message = document.getElementById('dex-toast-message');
+      message.innerText = msg;
+      toast.classList.remove('translate-y-24', 'opacity-0');
+      toast.classList.add('translate-y-0', 'opacity-100');
+      setTimeout(() => {
+        toast.classList.remove('translate-y-0', 'opacity-100');
+        toast.classList.add('translate-y-24', 'opacity-0');
+      }, 2400);
+    }
+  </script>
+
+</body>
+</html>
