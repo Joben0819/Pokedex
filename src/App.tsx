@@ -233,9 +233,11 @@ export default function App() {
                   <span onClick={() => {
                     if(pagination === 150){
                       showToast(`already on the limit`);
+                    }else{
+                    setPagination((prev) => prev + 10)
                     }
-                    setPagination((prev) => prev + 10);
-                    setTabBar(false)}}>Load more entries ({pagination})</span>
+                    setTabBar(false)}
+                  }>Load more entries ({pagination})</span>
                   <span className="material-symbols-outlined text-[16px]">expand_more</span>
                 </button>
               </div>

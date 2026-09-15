@@ -9,14 +9,8 @@ interface PokemonListResponse {
 
 }
 
-interface PokemonAPI{
-    pathname: string;
-    value: string;
-    limit: number;
-    offset: number
-}
 
-export function usePokemonAPi<T>(pathname: string, value: string,  limit?: number , offset?: number ) {
+export function usePokemonAPi(pathname: string, value: string,  limit?: number , offset?: number ) {
 
   return useQuery<PokemonListResponse>({
     queryKey: ['pokemon-list',  pathname, value, limit, offset],
