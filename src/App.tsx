@@ -40,15 +40,15 @@ export default function App() {
   }
   const value = usePokemonAPi('https://pokeapi.co/api/v2/pokemon/', '', 150, 0).data;
 
-function useToast(): UseToastReturn {
-  const [toast, setToast] = useState<ToastState>({ visible: false, message: "" });
+  function useToast(): UseToastReturn {
+    const [toast, setToast] = useState<ToastState>({ visible: false, message: "" });
 
-  const showToast = useCallback((message: string): void => {
-      setToast({ visible: true, message });
-      setTimeout(() => setToast({ visible: false, message: "" }), 2400);
-    }, []);
+    const showToast = useCallback((message: string): void => {
+        setToast({ visible: true, message });
+        setTimeout(() => setToast({ visible: false, message: "" }), 2400);
+      }, []);
 
-    return { toast, showToast };
+      return { toast, showToast };
   }
 
   const selected = useMemo<Pokemon | null>(
@@ -230,7 +230,12 @@ function useToast(): UseToastReturn {
 
               <div className="flex justify-center my-space-sm">
                 <button className="px-space-xl py-space-sm rounded-full bg-surface-container text-on-surface hover:bg-surface-container-high font-label-md text-label-md flex items-center gap-space-xs transition-colors">
-                  <span onClick={() => {setPagination((prev) => prev + 10), setTabBar(false)}}>Load more entries ({pagination})</span>
+                  <span onClick={() => {
+                    if(pagination === 150){
+                      showToast(`already on the limit`);
+                    }
+                    setPagination((prev) => prev + 10);
+                    setTabBar(false)}}>Load more entries ({pagination})</span>
                   <span className="material-symbols-outlined text-[16px]">expand_more</span>
                 </button>
               </div>
